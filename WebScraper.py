@@ -1,14 +1,14 @@
 
 # coding: utf-8
 
-# In[11]:
+# In[19]:
 
 
-import urllib
+import urllib3
 from bs4 import BeautifulSoup
 
 
-# In[69]:
+# In[27]:
 
 
 class Scraper:
@@ -16,16 +16,35 @@ class Scraper:
         pass
         
 class BailiiScraper(Scraper):
-    def parse(self):
+    def docs(self):
+        docs = []
         http = urllib3.PoolManager()
-        page = http.request('GET', 'http://www.bailii.org/ew/cases/EWHC/Comm/1995/1.html')
-        soup = BeautifulSoup(page.data)
-        return soup.body.find('p', text='B e f o r e :').find_all_next(string=False)
+        mask = 'http://www.bailii.org/ew/cases/EWHC/Comm/{0}/{1}.html'
+        
+        for y in range(1996, 1998):
+            print ('year ' + str(y))
+            for n in range(370, 400):
+                page = http.request('GET', mask.format(str(y), str(n)))
+                if page.status != 200:
+                    continue
+                soup = BeautifulSoup(page.data, 'html.parser')
+                context = soup.find('p', text='B e f o r e :')
+                if context is None:
+                    continue
+                docs.append(context.find_all_next(string=False))
+                
+        return docs
 
 
-# In[70]:
+# In[28]:
 
 
 bailii = BailiiScraper()
-print(bailii.parse())
+docs = bailii.docs()
+
+
+# In[29]:
+
+
+len(docs)
 
