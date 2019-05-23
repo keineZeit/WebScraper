@@ -98,7 +98,7 @@ class BailiiScraper(Scraper):
 
 
 bailii = BailiiScraper()
-docs = bailii.docs(years=(1995, 1999)) # Returns list with docs as dicts(name, header, body)
+docs = bailii.docs(years=(2016, 2020)) # Returns list with docs as dicts(name, header, body)
 bailii.write_to_file(docs, 'output/')
 
 
